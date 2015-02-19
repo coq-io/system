@@ -84,21 +84,21 @@ End Lwt.
 Definition eval_command (c : Effect.command Unix.effect)
   : Lwt.t (Effect.answer Unix.effect c) :=
   match c return (Lwt.t (Effect.answer Unix.effect c)) with
-  | Unix.Command.ListFiles folder =>
+  | Unix.ListFiles folder =>
     Lwt.bind (Lwt.list_files @@ String.of_lstring folder) (fun files =>
     Lwt.ret @@ Option.bind files (fun files =>
     Some (List.map String.to_lstring files)))
-  | Unix.Command.ReadFile file_name =>
+  | Unix.ReadFile file_name =>
     Lwt.bind (Lwt.read_file @@ String.of_lstring file_name) (fun content =>
     Lwt.ret @@ option_map String.to_lstring content)
-  | Unix.Command.WriteFile file_name content =>
+  | Unix.WriteFile file_name content =>
     let file_name := String.of_lstring file_name in
     let content := String.of_lstring content in
     Lwt.write_file file_name content
-  | Unix.Command.DeleteFile file_name =>
+  | Unix.DeleteFile file_name =>
     Lwt.delete_file @@ String.of_lstring file_name
-  | Unix.Command.System command => Lwt.system (String.of_lstring command)
-  | Unix.Command.Print message =>
+  | Unix.System command => Lwt.system (String.of_lstring command)
+  | Unix.Print message =>
     let message := String.of_lstring message in
     Lwt.print message
   end.
