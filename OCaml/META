@@ -1,0 +1,4 @@
+description = "Unix effects for Coq extracted programs."
+archive(byte) = "ioEffectsUnix.cma"
+archive(native) = "ioEffectsUnix.cmxa"
+version = "dev"
