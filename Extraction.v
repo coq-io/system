@@ -81,7 +81,8 @@ Module Lwt.
 End Lwt.
 
 (** Evaluate a command using Lwt. *)
-Definition eval_command (c : Effect.command Unix.effect) : Lwt.t (Effect.answer Unix.effect c) :=
+Definition eval_command (c : Effect.command Unix.effect)
+  : Lwt.t (Effect.answer Unix.effect c) :=
   match c return (Lwt.t (Effect.answer Unix.effect c)) with
   | Unix.Command.ListFiles folder =>
     Lwt.bind (Lwt.list_files @@ String.of_lstring folder) (fun files =>
