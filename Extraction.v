@@ -21,11 +21,11 @@ Module String.
 
   (** Export to an OCaml string. *)
   Parameter of_lstring : LString.t -> t.
-  Extract Constant of_lstring => "Utils.String.of_lstring".
+  Extract Constant of_lstring => "IoEffectsUnix.String.of_lstring".
 
   (** Import an OCaml string. *)
   Parameter to_lstring : t -> LString.t.
-  Extract Constant to_lstring => "Utils.String.to_lstring".
+  Extract Constant to_lstring => "IoEffectsUnix.String.to_lstring".
 End String.
 
 (** Unbounded integers. *)
@@ -57,27 +57,27 @@ Module Lwt.
 
   (** Print a message on the standard output. *)
   Parameter print : String.t -> t bool.
-  Extract Constant print => "Utils.print".
+  Extract Constant print => "IoEffectsUnix.print".
 
   (** List the files of a directory. *)
   Parameter list_files : String.t -> t (option (list String.t)).
-  Extract Constant list_files => "Utils.list_files".
+  Extract Constant list_files => "IoEffectsUnix.list_files".
 
   (** The the content of a file. *)
   Parameter read_file : String.t -> t (option String.t).
-  Extract Constant read_file => "Utils.read_file".
+  Extract Constant read_file => "IoEffectsUnix.read_file".
 
   (** Update (or create) a file with some content. *)
   Parameter write_file : String.t -> String.t -> t bool.
-  Extract Constant write_file => "Utils.write_file".
+  Extract Constant write_file => "IoEffectsUnix.write_file".
 
   (** Delete a file. *)
   Parameter delete_file : String.t -> t bool.
-  Extract Constant delete_file => "Utils.delete_file".
+  Extract Constant delete_file => "IoEffectsUnix.delete_file".
 
   (** Run a command. *)
   Parameter system : String.t -> t (option bool).
-  Extract Constant system => "Utils.system".
+  Extract Constant system => "IoEffectsUnix.system".
 End Lwt.
 
 (** Evaluate a command using Lwt. *)
