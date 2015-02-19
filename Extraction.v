@@ -81,9 +81,9 @@ Module Lwt.
 End Lwt.
 
 (** Evaluate a command using Lwt. *)
-Definition eval_command (c : Effect.command Unix.effect)
-  : Lwt.t (Effect.answer Unix.effect c) :=
-  match c return (Lwt.t (Effect.answer Unix.effect c)) with
+Definition eval_command (c : Effects.command Unix.effects)
+  : Lwt.t (Effects.answer Unix.effects c) :=
+  match c return (Lwt.t (Effects.answer Unix.effects c)) with
   | Unix.ListFiles folder =>
     Lwt.bind (Lwt.list_files @@ String.of_lstring folder) (fun files =>
     Lwt.ret @@ Option.bind files (fun files =>
@@ -104,7 +104,7 @@ Definition eval_command (c : Effect.command Unix.effect)
   end.
 
 (** Evaluate an expression using Lwt. *)
-Fixpoint eval {A : Type} (x : C.t Unix.effect A) : Lwt.t A :=
+Fixpoint eval {A : Type} (x : C.t Unix.effects A) : Lwt.t A :=
   match x with
   | C.Ret x => Lwt.ret x
   | C.Call command handler =>

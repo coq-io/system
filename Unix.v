@@ -26,6 +26,6 @@ Definition answer (command : t) : Type :=
   | Print _ => bool
   end.
 
-Definition effect : Effect.t := {|
-  Effect.command := t;
-  Effect.answer := answer |}.
+Definition effects : Effects.t := {|
+  Effects.command := t;
+  Effects.answer := answer |}.
