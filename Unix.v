@@ -1,5 +1,9 @@
+Require Import Coq.Lists.List.
 Require Import ListString.All.
 Require Import IoEffects.All.
+
+Import ListNotations.
+Import C.Notations.
 
 Inductive t :=
 (** List the files of a directory. *)
@@ -29,3 +33,16 @@ Definition answer (command : t) : Type :=
 Definition effects : Effects.t := {|
   Effects.command := t;
   Effects.answer := answer |}.
+
+Definition log (message : LString.t) : C.t effects unit :=
+  call effects (Print (message ++ [LString.Char.n])) (fun _ =>
+  ret tt).
+
+Module Run.
+  Import IoEffects.All.Run.
+
+  Definition log_ok (message : LString.t) : Run.t (log message) tt.
+    apply (Call effects (Print _) true).
+    apply Ret.
+  Defined.
+End Run.
