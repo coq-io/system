@@ -5,23 +5,17 @@ Require Import IoEffects.All.
 Import ListNotations.
 Import C.Notations.
 
+(** The Unix commands. *)
 Inductive t :=
-(** List the files of a directory. *)
 | ListFiles (directory : LString.t)
-(** Read the content of a file. *)
 | ReadFile (file_name : LString.t)
-(** Update (or create) a file with some content. *)
 | WriteFile (file_name : LString.t) (content : LString.t)
-(** Delete a file. *)
 | DeleteFile (file_name : LString.t)
-(** Run a command. *)
 | System (command : LString.t)
-(** Print a message on the standard output. *)
 | Print (message : LString.t)
-(** Read a line on the standard input. *)
 | ReadLine.
 
-(** The type of an answer for a command depends on the value of the command. *)
+(** The answers to Unix commands. *)
 Definition answer (command : t) : Type :=
   match command with
   | ListFiles _ => option (list LString.t)
@@ -33,29 +27,37 @@ Definition answer (command : t) : Type :=
   | ReadLine => option LString.t
   end.
 
+(** The definition of Unix effects. *)
 Definition effects : Effects.t := {|
   Effects.command := t;
   Effects.answer := answer |}.
 
+(** List the files of a directory. *)
 Definition list_files (directory : LString.t)
   : C.t effects (option (list LString.t)) :=
   call effects (ListFiles directory).
 
+(** Read the content of a file. *)
 Definition read_file (file_name : LString.t) : C.t effects (option LString.t) :=
   call effects (ReadFile file_name).
 
+(** Update (or create) a file with some content. *)
 Definition write_file (file_name content : LString.t) : C.t effects bool :=
   call effects (WriteFile file_name content).
 
+(** Delete a file. *)
 Definition delete_file (file_name : LString.t) : C.t effects bool :=
   call effects (DeleteFile file_name).
 
+(** Run a command. *)
 Definition system (command : LString.t) : C.t effects (option bool) :=
   call effects (System command).
 
+(** Print a message on the standard output. *)
 Definition print (message : LString.t) : C.t effects bool :=
   call effects (Print message).
 
+(** Print a message with an end of line on the standard output. *)
 Definition printl (message : LString.t) : C.t effects bool :=
   call effects (Print (message ++ [LString.Char.n])).
 
@@ -63,9 +65,11 @@ Definition log (message : LString.t) : C.t effects unit :=
   do! printl message in
   ret tt.
 
+(** Read a line on the standard input. *)
 Definition read_line : C.t effects (option LString.t) :=
   call effects ReadLine.
 
+(** Some basic scenarios. *)
 Module Run.
   Definition list_files_ok (directory : LString.t) (files : list LString.t)
     : Run.t (list_files directory) (Some files).
