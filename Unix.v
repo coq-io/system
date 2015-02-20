@@ -37,16 +37,71 @@ Definition effects : Effects.t := {|
   Effects.command := t;
   Effects.answer := answer |}.
 
+Definition list_files (directory : LString.t)
+  : C.t effects (option (list LString.t)) :=
+  call effects (ListFiles directory).
+
+Definition read_file (file_name : LString.t) : C.t effects (option LString.t) :=
+  call effects (ReadFile file_name).
+
+Definition write_file (file_name content : LString.t) : C.t effects bool :=
+  call effects (WriteFile file_name content).
+
+Definition delete_file (file_name : LString.t) : C.t effects bool :=
+  call effects (DeleteFile file_name).
+
+Definition system (command : LString.t) : C.t effects (option bool) :=
+  call effects (System command).
+
+Definition print (message : LString.t) : C.t effects bool :=
+  call effects (Print message).
+
+Definition printl (message : LString.t) : C.t effects bool :=
+  call effects (Print (message ++ [LString.Char.n])).
+
 Definition log (message : LString.t) : C.t effects unit :=
-  do! call effects (Print (message ++ [LString.Char.n])) in
+  do! printl message in
   ret tt.
 
 Definition read_line : C.t effects (option LString.t) :=
   call effects ReadLine.
 
 Module Run.
+  Definition list_files_ok (directory : LString.t) (files : list LString.t)
+    : Run.t (list_files directory) (Some files).
+    apply (Run.Call effects (ListFiles directory)).
+  Defined.
+
+  Definition read_file_ok (file_name : LString.t) (content : LString.t)
+    : Run.t (read_file file_name) (Some content).
+    apply (Run.Call effects (ReadFile file_name)).
+  Defined.
+
+  Definition write_file_ok (file_name content : LString.t) (is_success : bool)
+    : Run.t (write_file file_name content) is_success.
+    apply (Run.Call effects (WriteFile file_name content)).
+  Defined.
+
+  Definition delete_file_ok (file_name : LString.t) (is_success : bool)
+    : Run.t (delete_file file_name) is_success.
+    apply (Run.Call effects (DeleteFile file_name)).
+  Defined.
+
+  Definition system_ok (command : LString.t) (is_success : bool)
+    : Run.t (system command) (Some is_success).
+    apply (Run.Call effects (System command)).
+  Defined.
+
+  Definition print_ok (message : LString.t) : Run.t (print message) true.
+    apply (Run.Call effects (Print message)).
+  Defined.
+
+  Definition printl_ok (message : LString.t) : Run.t (printl message) true.
+    apply (print_ok _).
+  Defined.
+
   Definition log_ok (message : LString.t) : Run.t (log message) tt.
-    apply (Run.Let (Run.Call effects (Print _) true)).
+    apply (Run.Let (printl_ok _)).
     apply Run.Ret.
   Defined.
 
