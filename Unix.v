@@ -41,11 +41,24 @@ Definition log (message : LString.t) : C.t effects unit :=
   call effects (Print (message ++ [LString.Char.n])) (fun _ =>
   ret tt).
 
+Definition read_line : C.t effects (option LString.t) :=
+  call effects ReadLine (fun x => ret x).
+
 Module Run.
   Import IoEffects.All.Run.
 
   Definition log_ok (message : LString.t) : Run.t (log message) tt.
     apply (Call effects (Print _) true).
+    apply Ret.
+  Defined.
+
+  Definition read_line_ok (line : LString.t) : Run.t read_line (Some line).
+    apply (Call effects ReadLine (Some line)).
+    apply Ret.
+  Defined.
+
+  Definition read_line_error : Run.t read_line None.
+    apply (Call effects ReadLine None).
     apply Ret.
   Defined.
 End Run.
