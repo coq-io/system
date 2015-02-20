@@ -1,4 +1,4 @@
-# IO Effects Unix
+# IO Effects for Unix
 The Coq effects for Unix.
 
     Require Import IoEffects.All.
