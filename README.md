@@ -18,4 +18,4 @@ Using OPAM for Coq:
 
 
 ## Documentation
-See the complete documentation on [doc/io-effects-unix](http://clarus.github.io/doc/io-effects-unix/IoEffectsUnix.Unix.html).
+See the complete documentation online on [doc/io-effects-unix](http://clarus.github.io/doc/io-effects-unix/IoEffectsUnix.Unix.html).
