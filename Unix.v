@@ -38,27 +38,23 @@ Definition effects : Effects.t := {|
   Effects.answer := answer |}.
 
 Definition log (message : LString.t) : C.t effects unit :=
-  call effects (Print (message ++ [LString.Char.n])) (fun _ =>
-  ret tt).
+  do! call effects (Print (message ++ [LString.Char.n])) in
+  ret tt.
 
 Definition read_line : C.t effects (option LString.t) :=
-  call effects ReadLine (fun x => ret x).
+  call effects ReadLine.
 
 Module Run.
-  Import IoEffects.All.Run.
-
   Definition log_ok (message : LString.t) : Run.t (log message) tt.
-    apply (Call effects (Print _) true).
-    apply Ret.
+    apply (Run.Let (Run.Call effects (Print _) true)).
+    apply Run.Ret.
   Defined.
 
   Definition read_line_ok (line : LString.t) : Run.t read_line (Some line).
-    apply (Call effects ReadLine (Some line)).
-    apply Ret.
+    apply (Run.Call effects ReadLine (Some line)).
   Defined.
 
   Definition read_line_error : Run.t read_line None.
-    apply (Call effects ReadLine None).
-    apply Ret.
+    apply (Run.Call effects ReadLine None).
   Defined.
 End Run.

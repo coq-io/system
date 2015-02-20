@@ -113,9 +113,7 @@ Definition eval_command (c : Effects.command Unix.effects)
 (** Evaluate an expression using Lwt. *)
 Fixpoint eval {A : Type} (x : C.t Unix.effects A) : Lwt.t A :=
   match x with
-  | C.Ret x => Lwt.ret x
-  | C.Call command handler =>
-    Lwt.bind (eval_command command) (fun answer =>
-    eval @@ handler answer)
-  | C.Let _ x f => Lwt.bind (eval x) (fun x => eval (f x))
+  | C.Ret _ x => Lwt.ret x
+  | C.Call command => eval_command command
+  | C.Let _ _ x f => Lwt.bind (eval x) (fun x => eval (f x))
   end.
