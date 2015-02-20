@@ -72,18 +72,38 @@ Module Run.
     apply (Run.Call effects (ListFiles directory)).
   Defined.
 
+  Definition list_files_error (directory : LString.t)
+    : Run.t (list_files directory) None.
+    apply (Run.Call effects (ListFiles directory)).
+  Defined.
+
   Definition read_file_ok (file_name : LString.t) (content : LString.t)
     : Run.t (read_file file_name) (Some content).
     apply (Run.Call effects (ReadFile file_name)).
   Defined.
 
-  Definition write_file_ok (file_name content : LString.t) (is_success : bool)
-    : Run.t (write_file file_name content) is_success.
+  Definition read_file_error (file_name : LString.t)
+    : Run.t (read_file file_name) None.
+    apply (Run.Call effects (ReadFile file_name)).
+  Defined.
+
+  Definition write_file_ok (file_name content : LString.t)
+    : Run.t (write_file file_name content) true.
     apply (Run.Call effects (WriteFile file_name content)).
   Defined.
 
-  Definition delete_file_ok (file_name : LString.t) (is_success : bool)
-    : Run.t (delete_file file_name) is_success.
+  Definition write_file_error (file_name content : LString.t)
+    : Run.t (write_file file_name content) false.
+    apply (Run.Call effects (WriteFile file_name content)).
+  Defined.
+
+  Definition delete_file_ok (file_name : LString.t)
+    : Run.t (delete_file file_name) true.
+    apply (Run.Call effects (DeleteFile file_name)).
+  Defined.
+
+  Definition delete_file_error (file_name : LString.t)
+    : Run.t (delete_file file_name) false.
     apply (Run.Call effects (DeleteFile file_name)).
   Defined.
 
@@ -92,12 +112,24 @@ Module Run.
     apply (Run.Call effects (System command)).
   Defined.
 
+  Definition system_error (command : LString.t) : Run.t (system command) None.
+    apply (Run.Call effects (System command)).
+  Defined.
+
   Definition print_ok (message : LString.t) : Run.t (print message) true.
+    apply (Run.Call effects (Print message)).
+  Defined.
+
+  Definition print_error (message : LString.t) : Run.t (print message) false.
     apply (Run.Call effects (Print message)).
   Defined.
 
   Definition printl_ok (message : LString.t) : Run.t (printl message) true.
     apply (print_ok _).
+  Defined.
+
+  Definition printl_error (message : LString.t) : Run.t (printl message) false.
+    apply (print_error _).
   Defined.
 
   Definition log_ok (message : LString.t) : Run.t (log message) tt.
