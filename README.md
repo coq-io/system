@@ -20,11 +20,7 @@ Using OPAM for Coq:
 See the complete documentation online on [doc/io-effects-unix](http://clarus.github.io/doc/io-effects-unix/IoEffectsUnix.Unix.html).
 
 ## Extraction
-To run a program you can extract it to [OCaml](https://ocaml.org/). Install the extraction library:
-
-    opam install coq:io-effects:unix:ocaml
-
-and evaluate:
+To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
 
     Definition main := Extraction.Lwt.run (Extraction.eval hello_world).
     Extraction "main" main.
