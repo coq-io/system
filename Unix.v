@@ -17,7 +17,9 @@ Inductive t :=
 (** Run a command. *)
 | System (command : LString.t)
 (** Print a message on the standard output. *)
-| Print (message : LString.t).
+| Print (message : LString.t)
+(** Read a line on the standard input. *)
+| ReadLine.
 
 (** The type of an answer for a command depends on the value of the command. *)
 Definition answer (command : t) : Type :=
@@ -28,6 +30,7 @@ Definition answer (command : t) : Type :=
   | DeleteFile _ => bool
   | System _ => option bool
   | Print _ => bool
+  | ReadLine => option LString.t
   end.
 
 Definition effects : Effects.t := {|

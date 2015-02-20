@@ -55,10 +55,6 @@ Module Lwt.
   Parameter run : forall {A : Type}, t A -> A.
   Extract Constant run => "Lwt_main.run".
 
-  (** Print a message on the standard output. *)
-  Parameter print : String.t -> t bool.
-  Extract Constant print => "IoEffectsUnix.print".
-
   (** List the files of a directory. *)
   Parameter list_files : String.t -> t (option (list String.t)).
   Extract Constant list_files => "IoEffectsUnix.list_files".
@@ -78,6 +74,14 @@ Module Lwt.
   (** Run a command. *)
   Parameter system : String.t -> t (option bool).
   Extract Constant system => "IoEffectsUnix.system".
+
+  (** Print a message on the standard output. *)
+  Parameter print : String.t -> t bool.
+  Extract Constant print => "IoEffectsUnix.print".
+
+  (** Read a line on the standard input. *)
+  Parameter read_line : unit -> t (option String.t).
+  Extract Constant read_line => "IoEffectsUnix.read_line".
 End Lwt.
 
 (** Evaluate a command using Lwt. *)
@@ -101,6 +105,9 @@ Definition eval_command (c : Effects.command Unix.effects)
   | Unix.Print message =>
     let message := String.of_lstring message in
     Lwt.print message
+  | Unix.ReadLine =>
+    Lwt.bind (Lwt.read_line tt) (fun line =>
+    Lwt.ret @@ option_map String.to_lstring line)
   end.
 
 (** Evaluate an expression using Lwt. *)
