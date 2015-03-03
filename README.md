@@ -1,23 +1,23 @@
 # IO Effects for Unix
 The Coq effects for Unix.
 
-    Require Import IoEffects.All.
-    Require Import IoEffectsUnix.All.
+    Require Import Io.All.
+    Require Import IoSystem.All.
     Require Import ListString.All.
 
     Import C.Notations.
 
-    Definition hello_world : C.t Unix.effects unit :=
-      Unix.log (LString.s "Hello world!").
+    Definition hello_world : C.t System.effects unit :=
+      System.log (LString.s "Hello world!").
 
 ## Install
 Using OPAM for Coq:
 
     opam repo add coq-stable https://github.com/coq/repo-stable.git
-    opam install coq:io-effects:unix
+    opam install coq:io:system
 
 ## API
-See the complete documentation online on [doc/io-effects-unix](http://clarus.github.io/doc/io-effects-unix/IoEffectsUnix.Unix.html).
+See the complete documentation online on [doc/io-system](http://clarus.github.io/doc/io-system/IoSystem.System.html).
 
 ## Extraction
 To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
@@ -27,5 +27,5 @@ To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
 
 You can now compile and execute `main.ml`:
 
-    ocamlbuild main.native -use-ocamlfind -package io-effects-unix
+    ocamlbuild main.native -use-ocamlfind -package io-system
     ./main.native
