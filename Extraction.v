@@ -7,7 +7,7 @@ Require Import ExtrOcamlString.
 Require Import ErrorHandlers.All.
 Require Import FunctionNinjas.All.
 Require Import ListString.All.
-Require Import IoEffects.All.
+Require Import Io.All.
 Require Unix.
 
 Import ListNotations.

@@ -1,6 +1,6 @@
 Require Import Coq.Lists.List.
 Require Import ListString.All.
-Require Import IoEffects.All.
+Require Import Io.All.
 
 Import ListNotations.
 Import C.Notations.
