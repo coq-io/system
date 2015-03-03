@@ -1,8 +1,8 @@
-# IO Effects for Unix
-The Coq effects for Unix.
+# IO System
+System effects.
 
     Require Import Io.All.
-    Require Import IoSystem.All.
+    Require Import Io.System.All.
     Require Import ListString.All.
 
     Import C.Notations.
