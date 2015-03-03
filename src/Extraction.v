@@ -28,7 +28,7 @@ Module String.
   Extract Constant to_lstring => "IoSystem.String.to_lstring".
 End String.
 
-(** Unbounded integers. *)
+(** Interface to the Big_int library. *)
 Module BigInt.
   (** The OCaml's `bigint` type. *)
   Definition t : Type := bigint.
@@ -36,6 +36,13 @@ Module BigInt.
   (** Export to a `Z`. *)
   Definition to_Z : t -> Z := z_of_bigint.
 End BigInt.
+
+(** Interface to the Sys library. *)
+Module Sys.
+  (** The command line arguments of the program. *)
+  Parameter argv : list String.t.
+  Extract Constant argv => "IoSystem.argv".
+End Sys.
 
 (** Interface to the Lwt library. *)
 Module Lwt.
@@ -117,3 +124,8 @@ Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A :=
   | C.Call command => eval_command command
   | C.Let _ _ x f => Lwt.bind (eval x) (fun x => eval (f x))
   end.
+
+(** Run the main function. *)
+Definition run (main : list LString.t -> C.t System.effects unit) : unit :=
+  let argv := List.map String.to_lstring Sys.argv in
+  Extraction.Lwt.run (Extraction.eval (main argv)).
