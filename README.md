@@ -1,5 +1,5 @@
 # IO System
-System effects.
+System effects for Coq.
 
     Require Import Io.All.
     Require Import Io.System.All.
