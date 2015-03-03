@@ -8,7 +8,7 @@ Require Import ErrorHandlers.All.
 Require Import FunctionNinjas.All.
 Require Import ListString.All.
 Require Import Io.All.
-Require Unix.
+Require System.
 
 Import ListNotations.
 Local Open Scope type.
@@ -85,33 +85,33 @@ Module Lwt.
 End Lwt.
 
 (** Evaluate a command using Lwt. *)
-Definition eval_command (c : Effects.command Unix.effects)
-  : Lwt.t (Effects.answer Unix.effects c) :=
-  match c return (Lwt.t (Effects.answer Unix.effects c)) with
-  | Unix.ListFiles folder =>
+Definition eval_command (c : Effects.command System.effects)
+  : Lwt.t (Effects.answer System.effects c) :=
+  match c return (Lwt.t (Effects.answer System.effects c)) with
+  | System.ListFiles folder =>
     Lwt.bind (Lwt.list_files @@ String.of_lstring folder) (fun files =>
     Lwt.ret @@ Option.bind files (fun files =>
     Some (List.map String.to_lstring files)))
-  | Unix.ReadFile file_name =>
+  | System.ReadFile file_name =>
     Lwt.bind (Lwt.read_file @@ String.of_lstring file_name) (fun content =>
     Lwt.ret @@ option_map String.to_lstring content)
-  | Unix.WriteFile file_name content =>
+  | System.WriteFile file_name content =>
     let file_name := String.of_lstring file_name in
     let content := String.of_lstring content in
     Lwt.write_file file_name content
-  | Unix.DeleteFile file_name =>
+  | System.DeleteFile file_name =>
     Lwt.delete_file @@ String.of_lstring file_name
-  | Unix.System command => Lwt.system (String.of_lstring command)
-  | Unix.Print message =>
+  | System.System command => Lwt.system (String.of_lstring command)
+  | System.Print message =>
     let message := String.of_lstring message in
     Lwt.print message
-  | Unix.ReadLine =>
+  | System.ReadLine =>
     Lwt.bind (Lwt.read_line tt) (fun line =>
     Lwt.ret @@ option_map String.to_lstring line)
   end.
 
 (** Evaluate an expression using Lwt. *)
-Fixpoint eval {A : Type} (x : C.t Unix.effects A) : Lwt.t A :=
+Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A :=
   match x with
   | C.Ret _ x => Lwt.ret x
   | C.Call command => eval_command command
