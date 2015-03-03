@@ -5,7 +5,7 @@ Require Import Io.All.
 Import ListNotations.
 Import C.Notations.
 
-(** The Unix commands. *)
+(** The System commands. *)
 Inductive t :=
 | ListFiles (directory : LString.t)
 | ReadFile (file_name : LString.t)
@@ -15,7 +15,7 @@ Inductive t :=
 | Print (message : LString.t)
 | ReadLine.
 
-(** The answers to Unix commands. *)
+(** The answers to System commands. *)
 Definition answer (command : t) : Type :=
   match command with
   | ListFiles _ => option (list LString.t)
@@ -27,7 +27,7 @@ Definition answer (command : t) : Type :=
   | ReadLine => option LString.t
   end.
 
-(** The definition of Unix effects. *)
+(** The definition of System effects. *)
 Definition effects : Effects.t := {|
   Effects.command := t;
   Effects.answer := answer |}.

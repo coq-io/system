@@ -17,7 +17,7 @@ Using OPAM for Coq:
     opam install coq:io:system
 
 ## API
-See the complete documentation online on [doc/io-system](http://clarus.github.io/doc/io-system/IoSystem.System.html).
+See the complete documentation online on [doc/io-system](http://clarus.github.io/doc/io-system/Io.System.System.html).
 
 ## Extraction
 To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
