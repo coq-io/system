@@ -1,5 +1,5 @@
--R . Io.System
+-R src Io.System
 
-All.v
-Extraction.v
-System.v
+src/All.v
+src/Extraction.v
+src/System.v
