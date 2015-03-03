@@ -7,7 +7,7 @@ System effects for Coq. See [coq:io](https://github.com/clarus/io).
 
     Import C.Notations.
 
-    Definition hello_world : C.t System.effects unit :=
+    Definition hello_world (argv : list LString.t) : C.t System.effects unit :=
       System.log (LString.s "Hello world!").
 
 ## Install
@@ -22,7 +22,7 @@ See the complete documentation online on [doc/io-system](http://clarus.github.io
 ## Extraction
 To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
 
-    Definition main := Extraction.Lwt.run (Extraction.eval hello_world).
+    Definition main := Extraction.run hello_world.
     Extraction "main" main.
 
 You can now compile and execute `main.ml`:
