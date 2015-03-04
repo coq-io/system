@@ -118,14 +118,14 @@ Definition eval_command (c : Effects.command System.effects)
   end.
 
 (** Evaluate an expression using Lwt. *)
-Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A :=
-  match x with
-  | C.Ret _ x => Lwt.ret x
-  | C.Call command => eval_command command
-  | C.Let _ _ x f => Lwt.bind (eval x) (fun x => eval (f x))
-  end.
+Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A.
+  destruct x as [A x | command | A B x f].
+  - exact (Lwt.ret x).
+  - exact (eval_command command).
+  - exact (Lwt.bind (eval _ x) (fun x => eval _ (f x))).
+Defined.
 
 (** Run the main function. *)
 Definition run (main : list LString.t -> C.t System.effects unit) : unit :=
   let argv := List.map String.to_lstring Sys.argv in
-  Extraction.Lwt.run (Extraction.eval (main argv)).
+  Lwt.run (Extraction.eval (main argv)).
