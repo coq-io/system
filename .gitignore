@@ -3,4 +3,6 @@ Makefile.bak
 *.vo
 *.glob
 *.v.d
+*.aux
 html/
+.coq-native/
