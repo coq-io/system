@@ -58,6 +58,14 @@ Module Lwt.
   Parameter bind : forall {A B : Type}, t A -> (A -> t B) -> t B.
   Extract Constant bind => "Lwt.bind".
 
+  (** Join. *)
+  Parameter join : forall {A B : Type}, t A -> t B -> t (A * B).
+  Extract Constant join => "IoSystem.join".
+
+  (** First. *)
+  Parameter first : forall {A B : Type}, t A -> t B -> t (A + B).
+  Extract Constant first => "IoSystem.first".
+
   (** Run. *)
   Parameter run : forall {A : Type}, t A -> A.
   Extract Constant run => "Lwt_main.run".
@@ -119,10 +127,12 @@ Definition eval_command (c : Effects.command System.effects)
 
 (** Evaluate an expression using Lwt. *)
 Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A.
-  destruct x as [A x | command | A B x f].
+  destruct x as [A x | command | A B x f | A B x y | A B x y].
   - exact (Lwt.ret x).
   - exact (eval_command command).
   - exact (Lwt.bind (eval _ x) (fun x => eval _ (f x))).
+  - exact (Lwt.join (eval _ x) (eval _ y)).
+  - exact (Lwt.first (eval _ x) (eval _ y)).
 Defined.
 
 (** Run the main function. *)
