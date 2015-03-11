@@ -61,8 +61,9 @@ Definition print (message : LString.t) : C.t effects bool :=
 Definition printl (message : LString.t) : C.t effects bool :=
   call effects (Print (message ++ [LString.Char.n])).
 
+(** Print a message with an end of line without checking the outcome. *)
 Definition log (message : LString.t) : C.t effects unit :=
-  do! printl message in
+  let! is_success := printl message in
   ret tt.
 
 (** Read a line on the standard input. *)

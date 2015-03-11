@@ -13,6 +13,18 @@ Require System.
 Import ListNotations.
 Local Open Scope type.
 
+(** Interface to the sum type. *)
+Module Sum.
+  Parameter t : Type -> Type -> Type.
+  Extract Constant t "'a" "'b" => "('a, 'b) IoSystem.Sum.t".
+
+  Parameter destruct : forall {A B C : Type}, t A B -> (A -> C) -> (B -> C) -> C.
+  Extract Constant destruct => "IoSystem.Sum.destruct".
+
+  Definition to_coq {A B : Type} (s : t A B) : A + B :=
+    destruct s inl inr.
+End Sum.
+
 (** Interface with the OCaml strings. *)
 Module String.
   (** The OCaml `string` type. *)
@@ -63,7 +75,7 @@ Module Lwt.
   Extract Constant join => "IoSystem.join".
 
   (** First. *)
-  Parameter first : forall {A B : Type}, t A -> t B -> t (A + B).
+  Parameter first : forall {A B : Type}, t A -> t B -> t (Sum.t A B).
   Extract Constant first => "IoSystem.first".
 
   (** Run. *)
@@ -132,7 +144,9 @@ Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A.
   - exact (eval_command command).
   - exact (Lwt.bind (eval _ x) (fun x => eval _ (f x))).
   - exact (Lwt.join (eval _ x) (eval _ y)).
-  - exact (Lwt.first (eval _ x) (eval _ y)).
+  - exact (
+      Lwt.bind (Lwt.first (eval _ x) (eval _ y)) (fun s =>
+      Lwt.ret @@ Sum.to_coq s)).
 Defined.
 
 (** Run the main function. *)
