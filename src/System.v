@@ -13,7 +13,7 @@ Inductive t :=
 | WriteFile (file_name : LString.t) (content : LString.t)
 | DeleteFile (file_name : LString.t)
 | System (command : LString.t)
-| Eval (command : LString.t) (args : list LString.t) (input : LString.t)
+| Eval (command : LString.t) (args : list LString.t)
 | Print (message : LString.t)
 | ReadLine.
 
@@ -25,7 +25,7 @@ Definition answer (command : t) : Type :=
   | WriteFile _ _ => bool
   | DeleteFile _ => bool
   | System _ => option bool
-  | Eval _ _ _ => option (Z * LString.t * LString.t)
+  | Eval _ _ => option (Z * LString.t * LString.t)
   | Print _ => bool
   | ReadLine => option LString.t
   end.
@@ -56,10 +56,10 @@ Definition delete_file (file_name : LString.t) : C.t effect bool :=
 Definition system (command : LString.t) : C.t effect (option bool) :=
   call effect (System command).
 
-(** Run a command controlling the input and the outputs. *)
+(** Run a command controlling the outputs. *)
 Definition eval (command : LString.t) (args : list LString.t)
-  (input : LString.t) : C.t effect (option (Z * LString.t * LString.t)) :=
-  call effect (Eval command args input).
+  : C.t effect (option (Z * LString.t * LString.t)) :=
+  call effect (Eval command args).
 
 (** Print a message on the standard output. *)
 Definition print (message : LString.t) : C.t effect bool :=
