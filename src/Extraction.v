@@ -13,33 +13,6 @@ Require System.
 Import ListNotations.
 Local Open Scope type.
 
-(** Interface to the sum type. *)
-Module Sum.
-  Parameter t : Type -> Type -> Type.
-  Extract Constant t "'a" "'b" => "('a, 'b) IoSystem.Sum.t".
-
-  Parameter destruct : forall {A B C : Type}, t A B -> (A -> C) -> (B -> C) -> C.
-  Extract Constant destruct => "IoSystem.Sum.destruct".
-
-  Definition to_coq {A B : Type} (s : t A B) : A + B :=
-    destruct s inl inr.
-End Sum.
-
-(** Interface with the OCaml strings. *)
-Module String.
-  (** The OCaml `string` type. *)
-  Parameter t : Type.
-  Extract Constant t => "string".
-
-  (** Export to an OCaml string. *)
-  Parameter of_lstring : LString.t -> t.
-  Extract Constant of_lstring => "IoSystem.String.of_lstring".
-
-  (** Import an OCaml string. *)
-  Parameter to_lstring : t -> LString.t.
-  Extract Constant to_lstring => "IoSystem.String.to_lstring".
-End String.
-
 (** Interface to the Big_int library. *)
 Module BigInt.
   (** The OCaml's `big_int` type. *)
@@ -57,6 +30,33 @@ Module BigInt.
   Definition to_Z (big : t) : Z :=
     to_Z_aux big Z0 Zpos Zneg xH xO xI.
 End BigInt.
+
+(** Interface with the OCaml strings. *)
+Module String.
+  (** The OCaml `string` type. *)
+  Parameter t : Type.
+  Extract Constant t => "string".
+
+  (** Export to an OCaml string. *)
+  Parameter of_lstring : LString.t -> t.
+  Extract Constant of_lstring => "IoSystem.String.of_lstring".
+
+  (** Import an OCaml string. *)
+  Parameter to_lstring : t -> LString.t.
+  Extract Constant to_lstring => "IoSystem.String.to_lstring".
+End String.
+
+(** Interface to the sum type. *)
+Module Sum.
+  Parameter t : Type -> Type -> Type.
+  Extract Constant t "'a" "'b" => "('a, 'b) IoSystem.Sum.t".
+
+  Parameter destruct : forall {A B C : Type}, t A B -> (A -> C) -> (B -> C) -> C.
+  Extract Constant destruct => "IoSystem.Sum.destruct".
+
+  Definition to_coq {A B : Type} (s : t A B) : A + B :=
+    destruct s inl inr.
+End Sum.
 
 (** Interface to the Sys library. *)
 Module Sys.
