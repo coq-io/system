@@ -46,7 +46,8 @@ Module BigInt.
   Parameter t : Type.
   Extract Constant t => "Big_int.big_int".
 
-  Parameter to_Z_aux : t ->
+  Parameter to_Z_aux : forall {Z positive : Type},
+    t ->
     Z -> (positive -> Z) -> (positive -> Z) ->
     positive -> (positive -> positive) -> (positive -> positive) ->
     Z.
