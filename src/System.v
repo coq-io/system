@@ -30,111 +30,111 @@ Definition answer (command : t) : Type :=
   | ReadLine => option LString.t
   end.
 
-(** The definition of System effects. *)
-Definition effects : Effects.t := {|
-  Effects.command := t;
-  Effects.answer := answer |}.
+(** The definition of the system effect. *)
+Definition effect : Effect.t := {|
+  Effect.command := t;
+  Effect.answer := answer |}.
 
 (** List the files of a directory. *)
 Definition list_files (directory : LString.t)
-  : C.t effects (option (list LString.t)) :=
-  call effects (ListFiles directory).
+  : C.t effect (option (list LString.t)) :=
+  call effect (ListFiles directory).
 
 (** Read the content of a file. *)
-Definition read_file (file_name : LString.t) : C.t effects (option LString.t) :=
-  call effects (ReadFile file_name).
+Definition read_file (file_name : LString.t) : C.t effect (option LString.t) :=
+  call effect (ReadFile file_name).
 
 (** Update (or create) a file with some content. *)
-Definition write_file (file_name content : LString.t) : C.t effects bool :=
-  call effects (WriteFile file_name content).
+Definition write_file (file_name content : LString.t) : C.t effect bool :=
+  call effect (WriteFile file_name content).
 
 (** Delete a file. *)
-Definition delete_file (file_name : LString.t) : C.t effects bool :=
-  call effects (DeleteFile file_name).
+Definition delete_file (file_name : LString.t) : C.t effect bool :=
+  call effect (DeleteFile file_name).
 
 (** Run a command. *)
-Definition system (command : LString.t) : C.t effects (option bool) :=
-  call effects (System command).
+Definition system (command : LString.t) : C.t effect (option bool) :=
+  call effect (System command).
 
 (** Run a command controlling the input and the outputs. *)
 Definition eval (command : LString.t) (args : list LString.t)
-  (input : LString.t) : C.t effects (option (Z * LString.t * LString.t)) :=
-  call effects (Eval command args input).
+  (input : LString.t) : C.t effect (option (Z * LString.t * LString.t)) :=
+  call effect (Eval command args input).
 
 (** Print a message on the standard output. *)
-Definition print (message : LString.t) : C.t effects bool :=
-  call effects (Print message).
+Definition print (message : LString.t) : C.t effect bool :=
+  call effect (Print message).
 
 (** Print a message with an end of line on the standard output. *)
-Definition printl (message : LString.t) : C.t effects bool :=
-  call effects (Print (message ++ [LString.Char.n])).
+Definition printl (message : LString.t) : C.t effect bool :=
+  call effect (Print (message ++ [LString.Char.n])).
 
 (** Print a message with an end of line without checking the outcome. *)
-Definition log (message : LString.t) : C.t effects unit :=
+Definition log (message : LString.t) : C.t effect unit :=
   let! is_success := printl message in
   ret tt.
 
 (** Read a line on the standard input. *)
-Definition read_line : C.t effects (option LString.t) :=
-  call effects ReadLine.
+Definition read_line : C.t effect (option LString.t) :=
+  call effect ReadLine.
 
 (** Some basic scenarios. *)
 Module Run.
   Definition list_files_ok (directory : LString.t) (files : list LString.t)
     : Run.t (list_files directory) (Some files).
-    apply (Run.Call effects (ListFiles directory)).
+    apply (Run.Call effect (ListFiles directory)).
   Defined.
 
   Definition list_files_error (directory : LString.t)
     : Run.t (list_files directory) None.
-    apply (Run.Call effects (ListFiles directory)).
+    apply (Run.Call effect (ListFiles directory)).
   Defined.
 
   Definition read_file_ok (file_name : LString.t) (content : LString.t)
     : Run.t (read_file file_name) (Some content).
-    apply (Run.Call effects (ReadFile file_name)).
+    apply (Run.Call effect (ReadFile file_name)).
   Defined.
 
   Definition read_file_error (file_name : LString.t)
     : Run.t (read_file file_name) None.
-    apply (Run.Call effects (ReadFile file_name)).
+    apply (Run.Call effect (ReadFile file_name)).
   Defined.
 
   Definition write_file_ok (file_name content : LString.t)
     : Run.t (write_file file_name content) true.
-    apply (Run.Call effects (WriteFile file_name content)).
+    apply (Run.Call effect (WriteFile file_name content)).
   Defined.
 
   Definition write_file_error (file_name content : LString.t)
     : Run.t (write_file file_name content) false.
-    apply (Run.Call effects (WriteFile file_name content)).
+    apply (Run.Call effect (WriteFile file_name content)).
   Defined.
 
   Definition delete_file_ok (file_name : LString.t)
     : Run.t (delete_file file_name) true.
-    apply (Run.Call effects (DeleteFile file_name)).
+    apply (Run.Call effect (DeleteFile file_name)).
   Defined.
 
   Definition delete_file_error (file_name : LString.t)
     : Run.t (delete_file file_name) false.
-    apply (Run.Call effects (DeleteFile file_name)).
+    apply (Run.Call effect (DeleteFile file_name)).
   Defined.
 
   Definition system_ok (command : LString.t) (is_success : bool)
     : Run.t (system command) (Some is_success).
-    apply (Run.Call effects (System command)).
+    apply (Run.Call effect (System command)).
   Defined.
 
   Definition system_error (command : LString.t) : Run.t (system command) None.
-    apply (Run.Call effects (System command)).
+    apply (Run.Call effect (System command)).
   Defined.
 
   Definition print_ok (message : LString.t) : Run.t (print message) true.
-    apply (Run.Call effects (Print message)).
+    apply (Run.Call effect (Print message)).
   Defined.
 
   Definition print_error (message : LString.t) : Run.t (print message) false.
-    apply (Run.Call effects (Print message)).
+    apply (Run.Call effect (Print message)).
   Defined.
 
   Definition printl_ok (message : LString.t) : Run.t (printl message) true.
@@ -151,10 +151,10 @@ Module Run.
   Defined.
 
   Definition read_line_ok (line : LString.t) : Run.t read_line (Some line).
-    apply (Run.Call effects ReadLine (Some line)).
+    apply (Run.Call effect ReadLine (Some line)).
   Defined.
 
   Definition read_line_error : Run.t read_line None.
-    apply (Run.Call effects ReadLine None).
+    apply (Run.Call effect ReadLine None).
   Defined.
 End Run.

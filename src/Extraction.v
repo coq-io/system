@@ -117,9 +117,9 @@ Module Lwt.
 End Lwt.
 
 (** Evaluate a command using Lwt. *)
-Definition eval_command (c : Effects.command System.effects)
-  : Lwt.t (Effects.answer System.effects c) :=
-  match c return (Lwt.t (Effects.answer System.effects c)) with
+Definition eval_command (c : Effect.command System.effect)
+  : Lwt.t (Effect.answer System.effect c) :=
+  match c return (Lwt.t (Effect.answer System.effect c)) with
   | System.ListFiles folder =>
     Lwt.bind (Lwt.list_files @@ String.of_lstring folder) (fun files =>
     Lwt.ret @@ Option.bind files (fun files =>
@@ -153,7 +153,7 @@ Definition eval_command (c : Effects.command System.effects)
   end.
 
 (** Evaluate an expression using Lwt. *)
-Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A.
+Fixpoint eval {A : Type} (x : C.t System.effect A) : Lwt.t A.
   destruct x as [A x | command | A B x f | A B x y | A B x y].
   - exact (Lwt.ret x).
   - exact (eval_command command).
@@ -165,6 +165,6 @@ Fixpoint eval {A : Type} (x : C.t System.effects A) : Lwt.t A.
 Defined.
 
 (** Run the main function. *)
-Definition run (main : list LString.t -> C.t System.effects unit) : unit :=
+Definition run (main : list LString.t -> C.t System.effect unit) : unit :=
   let argv := List.map String.to_lstring Sys.argv in
   Lwt.run (Extraction.eval (main argv)).
