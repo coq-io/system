@@ -1,8 +1,8 @@
 (** Extraction to OCaml. New primitives are defined in `extraction/utils.ml`. *)
 Require Import Coq.Lists.List.
+Require Import Coq.PArith.PArith.
 Require Import Coq.ZArith.ZArith.
 Require Import ExtrOcamlBasic.
-Require Import ExtrOcamlBigIntConv.
 Require Import ExtrOcamlString.
 Require Import ErrorHandlers.All.
 Require Import FunctionNinjas.All.
@@ -42,11 +42,19 @@ End String.
 
 (** Interface to the Big_int library. *)
 Module BigInt.
-  (** The OCaml's `bigint` type. *)
-  Definition t : Type := bigint.
+  (** The OCaml's `big_int` type. *)
+  Parameter t : Type.
+  Extract Constant t => "Big_int.big_int".
+
+  Parameter to_Z_aux : t ->
+    Z -> (positive -> Z) -> (positive -> Z) ->
+    positive -> (positive -> positive) -> (positive -> positive) ->
+    Z.
+  Extract Constant to_Z_aux => "IoSystem.Big.to_Z_aux".
 
   (** Export to a `Z`. *)
-  Definition to_Z : t -> Z := z_of_bigint.
+  Definition to_Z (big : t) : Z :=
+    to_Z_aux big Z0 Zpos Zneg xH xO xI.
 End BigInt.
 
 (** Interface to the Sys library. *)
