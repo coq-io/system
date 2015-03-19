@@ -112,8 +112,7 @@ Module Lwt.
   Extract Constant system => "IoSystem.system".
 
   (** Run a command controlling the outputs. *)
-  Parameter eval : String.t -> list String.t ->
-    t (option (BigInt.t * String.t * String.t)).
+  Parameter eval : list String.t -> t (option (BigInt.t * String.t * String.t)).
   Extract Constant eval => "IoSystem.eval".
 
   (** Print a message on the standard output. *)
@@ -143,10 +142,9 @@ Definition eval_command (c : Effect.command System.effect)
   | System.DeleteFile file_name =>
     Lwt.delete_file @@ String.of_lstring file_name
   | System.System command => Lwt.system (String.of_lstring command)
-  | System.Eval command args =>
-    let command := String.of_lstring command in
-    let args := List.map String.of_lstring args in
-    Lwt.bind (Lwt.eval command args) (fun result =>
+  | System.Eval command =>
+    let command := List.map String.of_lstring command in
+    Lwt.bind (Lwt.eval command) (fun result =>
     Lwt.ret (result |> option_map (fun result =>
     match result with
     | (status, output, err) =>
