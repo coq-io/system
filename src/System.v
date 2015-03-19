@@ -1,4 +1,5 @@
 Require Import Coq.Lists.List.
+Require Import Coq.ZArith.ZArith.
 Require Import ListString.All.
 Require Import Io.All.
 
@@ -12,6 +13,7 @@ Inductive t :=
 | WriteFile (file_name : LString.t) (content : LString.t)
 | DeleteFile (file_name : LString.t)
 | System (command : LString.t)
+| Eval (command : LString.t) (args : list LString.t) (input : LString.t)
 | Print (message : LString.t)
 | ReadLine.
 
@@ -23,6 +25,7 @@ Definition answer (command : t) : Type :=
   | WriteFile _ _ => bool
   | DeleteFile _ => bool
   | System _ => option bool
+  | Eval _ _ _ => option (Z * LString.t * LString.t)
   | Print _ => bool
   | ReadLine => option LString.t
   end.
@@ -52,6 +55,11 @@ Definition delete_file (file_name : LString.t) : C.t effects bool :=
 (** Run a command. *)
 Definition system (command : LString.t) : C.t effects (option bool) :=
   call effects (System command).
+
+(** Run a command controlling the input and the outputs. *)
+Definition eval (command : LString.t) (args : list LString.t)
+  (input : LString.t) : C.t effects (option (Z * LString.t * LString.t)) :=
+  call effects (Eval command args input).
 
 (** Print a message on the standard output. *)
 Definition print (message : LString.t) : C.t effects bool :=
