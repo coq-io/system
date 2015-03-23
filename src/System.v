@@ -79,82 +79,84 @@ Definition read_line : C.t effect (option LString.t) :=
   call effect ReadLine.
 
 (** Some basic scenarios. *)
-Module Run.
+Module Spec.
+  Import Io.Spec.
+
   Definition list_files_ok (directory : LString.t) (files : list LString.t)
-    : Run.t (list_files directory) (Some files).
-    apply (Run.Call effect (ListFiles directory)).
+    : Spec.t (list_files directory) (Some files).
+    apply (Call effect (ListFiles directory)).
   Defined.
 
   Definition list_files_error (directory : LString.t)
-    : Run.t (list_files directory) None.
-    apply (Run.Call effect (ListFiles directory)).
+    : Spec.t (list_files directory) None.
+    apply (Call effect (ListFiles directory)).
   Defined.
 
   Definition read_file_ok (file_name : LString.t) (content : LString.t)
-    : Run.t (read_file file_name) (Some content).
-    apply (Run.Call effect (ReadFile file_name)).
+    : Spec.t (read_file file_name) (Some content).
+    apply (Call effect (ReadFile file_name)).
   Defined.
 
   Definition read_file_error (file_name : LString.t)
-    : Run.t (read_file file_name) None.
-    apply (Run.Call effect (ReadFile file_name)).
+    : Spec.t (read_file file_name) None.
+    apply (Call effect (ReadFile file_name)).
   Defined.
 
   Definition write_file_ok (file_name content : LString.t)
-    : Run.t (write_file file_name content) true.
-    apply (Run.Call effect (WriteFile file_name content)).
+    : Spec.t (write_file file_name content) true.
+    apply (Call effect (WriteFile file_name content)).
   Defined.
 
   Definition write_file_error (file_name content : LString.t)
-    : Run.t (write_file file_name content) false.
-    apply (Run.Call effect (WriteFile file_name content)).
+    : Spec.t (write_file file_name content) false.
+    apply (Call effect (WriteFile file_name content)).
   Defined.
 
   Definition delete_file_ok (file_name : LString.t)
-    : Run.t (delete_file file_name) true.
-    apply (Run.Call effect (DeleteFile file_name)).
+    : Spec.t (delete_file file_name) true.
+    apply (Call effect (DeleteFile file_name)).
   Defined.
 
   Definition delete_file_error (file_name : LString.t)
-    : Run.t (delete_file file_name) false.
-    apply (Run.Call effect (DeleteFile file_name)).
+    : Spec.t (delete_file file_name) false.
+    apply (Call effect (DeleteFile file_name)).
   Defined.
 
   Definition system_ok (command : LString.t) (is_success : bool)
-    : Run.t (system command) (Some is_success).
-    apply (Run.Call effect (System command)).
+    : Spec.t (system command) (Some is_success).
+    apply (Call effect (System command)).
   Defined.
 
-  Definition system_error (command : LString.t) : Run.t (system command) None.
-    apply (Run.Call effect (System command)).
+  Definition system_error (command : LString.t) : Spec.t (system command) None.
+    apply (Call effect (System command)).
   Defined.
 
-  Definition print_ok (message : LString.t) : Run.t (print message) true.
-    apply (Run.Call effect (Print message)).
+  Definition print_ok (message : LString.t) : Spec.t (print message) true.
+    apply (Call effect (Print message)).
   Defined.
 
-  Definition print_error (message : LString.t) : Run.t (print message) false.
-    apply (Run.Call effect (Print message)).
+  Definition print_error (message : LString.t) : Spec.t (print message) false.
+    apply (Call effect (Print message)).
   Defined.
 
-  Definition printl_ok (message : LString.t) : Run.t (printl message) true.
+  Definition printl_ok (message : LString.t) : Spec.t (printl message) true.
     apply (print_ok _).
   Defined.
 
-  Definition printl_error (message : LString.t) : Run.t (printl message) false.
+  Definition printl_error (message : LString.t) : Spec.t (printl message) false.
     apply (print_error _).
   Defined.
 
-  Definition log_ok (message : LString.t) : Run.t (log message) tt.
-    apply (Run.Let (printl_ok _)).
-    apply Run.Ret.
+  Definition log_ok (message : LString.t) : Spec.t (log message) tt.
+    apply (Let (printl_ok _)).
+    apply Spec.Ret.
   Defined.
 
-  Definition read_line_ok (line : LString.t) : Run.t read_line (Some line).
-    apply (Run.Call effect ReadLine (Some line)).
+  Definition read_line_ok (line : LString.t) : Spec.t read_line (Some line).
+    apply (Call effect ReadLine (Some line)).
   Defined.
 
-  Definition read_line_error : Run.t read_line None.
-    apply (Run.Call effect ReadLine None).
+  Definition read_line_error : Spec.t read_line None.
+    apply (Call effect ReadLine None).
   Defined.
-End Run.
+End Spec.
