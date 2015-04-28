@@ -46,18 +46,6 @@ Module String.
   Extract Constant to_lstring => "IoSystem.String.to_lstring".
 End String.
 
-(** Interface to the sum type. *)
-Module Sum.
-  Parameter t : Type -> Type -> Type.
-  Extract Constant t "'a" "'b" => "('a, 'b) IoSystem.Sum.t".
-
-  Parameter destruct : forall {A B C : Type}, t A B -> (A -> C) -> (B -> C) -> C.
-  Extract Constant destruct => "IoSystem.Sum.destruct".
-
-  Definition to_coq {A B : Type} (s : t A B) : A + B :=
-    destruct s inl inr.
-End Sum.
-
 (** Interface to the Sys library. *)
 Module Sys.
   (** The command line arguments of the program. *)
@@ -83,9 +71,9 @@ Module Lwt.
   Parameter join : forall {A B : Type}, t A -> t B -> t (A * B).
   Extract Constant join => "IoSystem.join".
 
-  (** First. *)
-  Parameter first : forall {A B : Type}, t A -> t B -> t (Sum.t A B).
-  Extract Constant first => "IoSystem.first".
+  (** Choose. *)
+  Parameter choose : forall {A : Type}, t A -> t A -> t A.
+  Extract Constant choose => "IoSystem.choose".
 
   (** Run. *)
   Parameter run : forall {A : Type}, t A -> A.
@@ -160,17 +148,15 @@ Definition eval_command (c : Effect.command System.effect)
 
 (** Evaluate an expression using Lwt. *)
 Fixpoint eval {A : Type} (x : C.t System.effect A) : Lwt.t A.
-  destruct x as [A x | command | A B x f | A B x y | A B x y].
+  destruct x as [A x | command | A B x f | A x1 x2 | A B x y].
   - exact (Lwt.ret x).
   - exact (eval_command command).
   - exact (Lwt.bind (eval _ x) (fun x => eval _ (f x))).
+  - exact (Lwt.choose (eval _ x1) (eval _ x2)).
   - exact (Lwt.join (eval _ x) (eval _ y)).
-  - exact (
-      Lwt.bind (Lwt.first (eval _ x) (eval _ y)) (fun s =>
-      Lwt.ret @@ Sum.to_coq s)).
 Defined.
 
 (** Run the main function. *)
 Definition run (main : list LString.t -> C.t System.effect unit) : unit :=
   let argv := List.map String.to_lstring Sys.argv in
-  Lwt.run (Extraction.eval (main argv)).
+  Lwt.run (eval (main argv)).
