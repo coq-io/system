@@ -1,4 +1,6 @@
 # IO System
+[![Join the chat at https://gitter.im/clarus/io-system](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/clarus/io-system?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 System effects for Coq. See also [coq:io](https://github.com/clarus/io).
 
     Require Import Io.All.
