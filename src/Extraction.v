@@ -75,9 +75,9 @@ Module Lwt.
   Parameter choose : forall {A : Type}, t A -> t A -> t A.
   Extract Constant choose => "IoSystem.choose".
 
-  (** Run. *)
-  Parameter run : forall {A : Type}, t A -> A.
-  Extract Constant run => "Lwt_main.run".
+  (** Launch. *)
+  Parameter launch : forall {A : Type}, t A -> A.
+  Extract Constant launch => "Lwt_main.run".
 
   (** List the files of a directory. *)
   Parameter list_files : String.t -> t (option (list String.t)).
@@ -156,7 +156,7 @@ Fixpoint eval {A : Type} (x : C.t System.effect A) : Lwt.t A.
   - exact (Lwt.join (eval _ x) (eval _ y)).
 Defined.
 
-(** Run the main function. *)
-Definition run (main : list LString.t -> C.t System.effect unit) : unit :=
+(** Launch the main function. *)
+Definition launch (main : list LString.t -> C.t System.effect unit) : unit :=
   let argv := List.map String.to_lstring Sys.argv in
-  Lwt.run (eval (main argv)).
+  Lwt.launch (eval (main argv)).
