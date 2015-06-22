@@ -84,59 +84,59 @@ Module Run.
 
   Definition list_files_ok (directory : LString.t) (files : list LString.t)
     : Run.t (list_files directory) (Some files).
-    apply (Call effect (ListFiles directory)).
+    apply (Call (E := effect) (ListFiles directory)).
   Defined.
 
   Definition list_files_error (directory : LString.t)
     : Run.t (list_files directory) None.
-    apply (Call effect (ListFiles directory)).
+    apply (Call (E := effect) (ListFiles directory)).
   Defined.
 
   Definition read_file_ok (file_name : LString.t) (content : LString.t)
     : Run.t (read_file file_name) (Some content).
-    apply (Call effect (ReadFile file_name)).
+    apply (Call (E := effect) (ReadFile file_name)).
   Defined.
 
   Definition read_file_error (file_name : LString.t)
     : Run.t (read_file file_name) None.
-    apply (Call effect (ReadFile file_name)).
+    apply (Call (E := effect) (ReadFile file_name)).
   Defined.
 
   Definition write_file_ok (file_name content : LString.t)
     : Run.t (write_file file_name content) true.
-    apply (Call effect (WriteFile file_name content)).
+    apply (Call (E := effect) (WriteFile file_name content)).
   Defined.
 
   Definition write_file_error (file_name content : LString.t)
     : Run.t (write_file file_name content) false.
-    apply (Call effect (WriteFile file_name content)).
+    apply (Call (E := effect) (WriteFile file_name content)).
   Defined.
 
   Definition delete_file_ok (file_name : LString.t)
     : Run.t (delete_file file_name) true.
-    apply (Call effect (DeleteFile file_name)).
+    apply (Call (E := effect) (DeleteFile file_name)).
   Defined.
 
   Definition delete_file_error (file_name : LString.t)
     : Run.t (delete_file file_name) false.
-    apply (Call effect (DeleteFile file_name)).
+    apply (Call (E := effect) (DeleteFile file_name)).
   Defined.
 
   Definition system_ok (command : LString.t) (is_success : bool)
     : Run.t (system command) (Some is_success).
-    apply (Call effect (System command)).
+    apply (Call (E := effect) (System command)).
   Defined.
 
   Definition system_error (command : LString.t) : Run.t (system command) None.
-    apply (Call effect (System command)).
+    apply (Call (E := effect) (System command)).
   Defined.
 
   Definition print_ok (message : LString.t) : Run.t (print message) true.
-    apply (Call effect (Print message)).
+    apply (Call (E := effect) (Print message)).
   Defined.
 
   Definition print_error (message : LString.t) : Run.t (print message) false.
-    apply (Call effect (Print message)).
+    apply (Call (E := effect) (Print message)).
   Defined.
 
   Definition printl_ok (message : LString.t) : Run.t (printl message) true.
@@ -153,10 +153,10 @@ Module Run.
   Defined.
 
   Definition read_line_ok (line : LString.t) : Run.t read_line (Some line).
-    apply (Call effect ReadLine (Some line)).
+    apply (Call (E := effect) ReadLine (Some line)).
   Defined.
 
   Definition read_line_error : Run.t read_line None.
-    apply (Call effect ReadLine None).
+    apply (Call (E := effect) ReadLine None).
   Defined.
 End Run.
