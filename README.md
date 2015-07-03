@@ -15,7 +15,7 @@ System effects for Coq. See also [coq:io](https://github.com/clarus/io).
 ## Install
 Using OPAM for Coq:
 
-    opam repo add coq-stable https://github.com/coq/repo-stable.git
+    opam repo add coq-released https://coq.inria.fr/opam/released
     opam install coq:io:system
 
 ## API
