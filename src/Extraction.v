@@ -13,6 +13,15 @@ Require System.
 Import ListNotations.
 Local Open Scope type.
 
+(** Usefull values to define fixpoints. *)
+Module Loop.
+  Parameter infinity : nat.
+  Extract Constant infinity => "let rec inf = S inf in inf".
+
+  Parameter error : forall {A}, A.
+  Extract Constant error => "failwith ""Unexpected end of infinite loop.""".
+End Loop.
+
 (** Interface to the Big_int library. *)
 Module BigInt.
   (** The OCaml's `big_int` type. *)
@@ -147,7 +156,7 @@ Definition eval_command (c : Effect.command System.effect)
   end.
 
 (** Evaluate an expression using Lwt. *)
-Fixpoint eval {A : Type} (x : C.t System.effect A) : Lwt.t A.
+Fixpoint eval {A} (x : C.t System.effect A) : Lwt.t A.
   destruct x as [A x | command | A B x f | A x1 x2 | A B x y].
   - exact (Lwt.ret x).
   - exact (eval_command command).
@@ -160,3 +169,27 @@ Defined.
 Definition launch (main : list LString.t -> C.t System.effect unit) : unit :=
   let argv := List.map String.to_lstring Sys.argv in
   Lwt.launch (eval (main argv)).
+
+Module I.
+  Fixpoint eval_aux {A} (steps : nat) (x : C.I.t System.effect A) : Lwt.t A :=
+    match steps with
+    | O => Loop.error
+    | S steps =>
+      match x with
+      | C.I.Ret _ v => Lwt.ret v
+      | C.I.Call c => eval_command c
+      | C.I.Let _ _ x f =>
+        Lwt.bind (eval_aux steps x) (fun v_x => eval_aux steps (f v_x))
+      | C.I.Choose _ x1 x2 => Lwt.choose (eval_aux steps x1) (eval_aux steps x2)
+      | C.I.Join _ _ x y => Lwt.join (eval_aux steps x) (eval_aux steps y)
+      end
+    end.
+
+  Definition eval {A} (x : C.I.t System.effect A) : Lwt.t A :=
+    eval_aux Loop.infinity x.
+
+  Definition launch (main : list LString.t -> C.I.t System.effect unit)
+    : unit :=
+    let argv := List.map String.to_lstring Sys.argv in
+    Lwt.launch (eval (main argv)).
+End I.
