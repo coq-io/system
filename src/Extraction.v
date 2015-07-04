@@ -18,8 +18,9 @@ Module Loop.
   Parameter infinity : nat.
   Extract Constant infinity => "let rec inf = S inf in inf".
 
-  Parameter error : forall {A}, A.
-  Extract Constant error => "failwith ""Unexpected end of infinite loop.""".
+  Parameter error : forall {A B}, A -> B.
+  Extract Constant error =>
+    "fun _ -> failwith ""Unexpected end of infinite loop.""".
 End Loop.
 
 (** Interface to the Big_int library. *)
@@ -173,7 +174,7 @@ Definition launch (main : list LString.t -> C.t System.effect unit) : unit :=
 Module I.
   Fixpoint eval_aux {A} (steps : nat) (x : C.I.t System.effect A) : Lwt.t A :=
     match steps with
-    | O => Loop.error
+    | O => Loop.error tt
     | S steps =>
       match x with
       | C.I.Ret _ v => Lwt.ret v
