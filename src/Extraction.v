@@ -1,126 +1,16 @@
-(** Extraction to OCaml. New primitives are defined in `extraction/utils.ml`. *)
+(** Extraction to OCaml. *)
 Require Import Coq.Lists.List.
-Require Import Coq.PArith.PArith.
-Require Import Coq.ZArith.ZArith.
-Require Import ExtrOcamlBasic.
-Require Import ExtrOcamlString.
 Require Import ErrorHandlers.All.
+Require Import Extraction.Loop.
+Require Import Extraction.Lwt.
+Require Import Extraction.Sys.
 Require Import FunctionNinjas.All.
-Require Import ListString.All.
 Require Import Io.All.
+Require Import ListString.All.
 Require System.
 
 Import ListNotations.
 Local Open Scope type.
-
-(** Usefull values to define fixpoints. *)
-Module Loop.
-  Parameter infinity : nat.
-  Extract Constant infinity => "let rec inf = S inf in inf".
-
-  Parameter error : forall {A B}, A -> B.
-  Extract Constant error =>
-    "fun _ -> failwith ""Unexpected end of infinite loop.""".
-End Loop.
-
-(** Interface to the Big_int library. *)
-Module BigInt.
-  (** The OCaml's `big_int` type. *)
-  Parameter t : Type.
-  Extract Constant t => "Big_int.big_int".
-
-  Parameter to_Z_aux : forall {Z positive : Type},
-    t ->
-    Z -> (positive -> Z) -> (positive -> Z) ->
-    positive -> (positive -> positive) -> (positive -> positive) ->
-    Z.
-  Extract Constant to_Z_aux => "IoSystem.Big.to_Z_aux".
-
-  (** Export to a `Z`. *)
-  Definition to_Z (big : t) : Z :=
-    to_Z_aux big Z0 Zpos Zneg xH xO xI.
-End BigInt.
-
-(** Interface with the OCaml strings. *)
-Module String.
-  (** The OCaml `string` type. *)
-  Parameter t : Type.
-  Extract Constant t => "string".
-
-  (** Export to an OCaml string. *)
-  Parameter of_lstring : LString.t -> t.
-  Extract Constant of_lstring => "IoSystem.String.of_lstring".
-
-  (** Import an OCaml string. *)
-  Parameter to_lstring : t -> LString.t.
-  Extract Constant to_lstring => "IoSystem.String.to_lstring".
-End String.
-
-(** Interface to the Sys library. *)
-Module Sys.
-  (** The command line arguments of the program. *)
-  Parameter argv : list String.t.
-  Extract Constant argv => "IoSystem.argv".
-End Sys.
-
-(** Interface to the Lwt library. *)
-Module Lwt.
-  (** The `Lwt.t` type. *)
-  Parameter t : Type -> Type.
-  Extract Constant t "'a" => "'a Lwt.t".
-
-  (** Return. *)
-  Parameter ret : forall {A : Type}, A -> t A.
-  Extract Constant ret => "Lwt.return".
-
-  (** Bind. *)
-  Parameter bind : forall {A B : Type}, t A -> (A -> t B) -> t B.
-  Extract Constant bind => "Lwt.bind".
-
-  (** Join. *)
-  Parameter join : forall {A B : Type}, t A -> t B -> t (A * B).
-  Extract Constant join => "IoSystem.join".
-
-  (** Choose. *)
-  Parameter choose : forall {A : Type}, t A -> t A -> t A.
-  Extract Constant choose => "IoSystem.choose".
-
-  (** Launch. *)
-  Parameter launch : forall {A : Type}, t A -> A.
-  Extract Constant launch => "Lwt_main.run".
-
-  (** List the files of a directory. *)
-  Parameter list_files : String.t -> t (option (list String.t)).
-  Extract Constant list_files => "IoSystem.list_files".
-
-  (** The the content of a file. *)
-  Parameter read_file : String.t -> t (option String.t).
-  Extract Constant read_file => "IoSystem.read_file".
-
-  (** Update (or create) a file with some content. *)
-  Parameter write_file : String.t -> String.t -> t bool.
-  Extract Constant write_file => "IoSystem.write_file".
-
-  (** Delete a file. *)
-  Parameter delete_file : String.t -> t bool.
-  Extract Constant delete_file => "IoSystem.delete_file".
-
-  (** Run a command. *)
-  Parameter system : String.t -> t (option bool).
-  Extract Constant system => "IoSystem.system".
-
-  (** Run a command controlling the outputs. *)
-  Parameter eval : list String.t -> t (option (BigInt.t * String.t * String.t)).
-  Extract Constant eval => "IoSystem.eval".
-
-  (** Print a message on the standard output. *)
-  Parameter print : String.t -> t bool.
-  Extract Constant print => "IoSystem.print".
-
-  (** Read a line on the standard input. *)
-  Parameter read_line : unit -> t (option String.t).
-  Extract Constant read_line => "IoSystem.read_line".
-End Lwt.
 
 (** Evaluate a command using Lwt. *)
 Definition eval_command (c : Effect.command System.effect)
@@ -128,8 +18,8 @@ Definition eval_command (c : Effect.command System.effect)
   match c return (Lwt.t (Effect.answer System.effect c)) with
   | System.ListFiles folder =>
     Lwt.bind (Lwt.list_files @@ String.of_lstring folder) (fun files =>
-    Lwt.ret @@ Option.bind files (fun files =>
-    Some (List.map String.to_lstring files)))
+    Lwt.ret @@ Option.map files (fun files =>
+    List.map String.to_lstring files))
   | System.ReadFile file_name =>
     Lwt.bind (Lwt.read_file @@ String.of_lstring file_name) (fun content =>
     Lwt.ret @@ option_map String.to_lstring content)
