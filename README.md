@@ -1,7 +1,5 @@
 # IO System
-[![Join the chat at https://gitter.im/clarus/io-system](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/clarus/io-system?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-System effects for Coq. See also [coq:io](https://github.com/clarus/io).
+> System effects for Coq. See also [coq:io](https://github.com/clarus/io).
 
     Require Import Io.All.
     Require Import Io.System.All.
@@ -13,10 +11,10 @@ System effects for Coq. See also [coq:io](https://github.com/clarus/io).
       System.log (LString.s "Hello world!").
 
 ## Install
-Using OPAM for Coq:
+Using [OPAM for Coq](coq.io/opam/):
 
     opam repo add coq-released https://coq.inria.fr/opam/released
-    opam install coq:io:system
+    opam install coq-io-system
 
 ## API
 See the complete documentation online on [v2.3.0](http://coq-io.github.io/doc/system/2.3.0/toc.html).
