@@ -1,5 +1,5 @@
 # IO System
-> System effects for Coq. See also [coq:io](https://github.com/clarus/io).
+> System effects for Coq. See also [Coq.io](http://coq.io/).
 
     Require Import Io.All.
     Require Import Io.System.All.
