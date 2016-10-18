@@ -22,7 +22,7 @@ See the complete documentation online on [v2.3.0](http://coq-io.github.io/doc/sy
 ## Extraction
 To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
 
-    Definition main := Extraction.run hello_world.
+    Definition main := Extraction.launch hello_world.
     Extraction "main" main.
 
 You can now compile and execute `main.ml`:
