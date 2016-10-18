@@ -7,7 +7,7 @@
 
     Import C.Notations.
 
-    Definition hello_world (argv : list LString.t) : C.t System.effects unit :=
+    Definition hello_world (argv : list LString.t) : C.t System.effect unit :=
       System.log (LString.s "Hello world!").
 
 ## Install
