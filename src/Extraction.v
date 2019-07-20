@@ -177,12 +177,12 @@ Module I.
     | O => Loop.error tt
     | S steps =>
       match x with
-      | C.I.Ret _ v => Lwt.ret v
+      | C.I.Ret v => Lwt.ret v
       | C.I.Call c => eval_command c
-      | C.I.Let _ _ x f =>
+      | C.I.Let x f =>
         Lwt.bind (eval_aux steps x) (fun v_x => eval_aux steps (f v_x))
-      | C.I.Choose _ x1 x2 => Lwt.choose (eval_aux steps x1) (eval_aux steps x2)
-      | C.I.Join _ _ x y => Lwt.join (eval_aux steps x) (eval_aux steps y)
+      | C.I.Choose x1 x2 => Lwt.choose (eval_aux steps x1) (eval_aux steps x2)
+      | C.I.Join x y => Lwt.join (eval_aux steps x) (eval_aux steps y)
       end
     end.
 
