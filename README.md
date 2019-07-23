@@ -1,6 +1,8 @@
 # ![Logo](https://raw.githubusercontent.com/clarus/icons/master/megaphone-48.png) IO System
 > Library of Unix effects for Coq. See also [Coq.io](http://coq.io/).
 
+[![build status](https://img.shields.io/travis/coq-io/system.svg)](https://travis-ci.org/coq-io/system)
+
     Require Import Io.All.
     Require Import Io.System.All.
     Require Import ListString.All.
