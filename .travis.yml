@@ -27,7 +27,7 @@ install: |
     if [ -n \"\${COMPILER_EDGE}\" ]; then opam switch \${COMPILER_EDGE}; eval \$(opam env); fi
     opam update -y
     opam pin add coq-io-system.opam . --kind=path -y --no-action
-    opam pin add ocaml/coq-io-system-ocaml.opam . --kind=path -y --no-action
+    opam pin add coq-io-system-ocaml.opam . --kind=path -y --no-action
     opam install coq-io-system --deps-only -y --ignore-constraints-on=coq-io-system-ocaml
     opam config list
     opam repo list
