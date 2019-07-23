@@ -8,4 +8,4 @@ uninstall:
 	ocamlfind remove io-system
 
 clean:
-ocamlbuild -clean
+	ocamlbuild -clean
