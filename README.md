@@ -16,8 +16,8 @@ Using [OPAM for Coq](coq.io/opam/):
     opam repo add coq-released https://coq.inria.fr/opam/released
     opam install coq-io-system
 
-## API
-See the complete documentation online on [v2.3.0](http://coq-io.github.io/doc/system/2.3.0/toc.html).
+## Documentation
+See http://coq.io/.
 
 ## Extraction
 To run a program you can extract it to [OCaml](https://ocaml.org/). Do:
