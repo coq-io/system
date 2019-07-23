@@ -1,5 +1,5 @@
-# IO System
-> System effects for Coq. See also [Coq.io](http://coq.io/).
+# ![Logo](https://raw.githubusercontent.com/clarus/icons/master/megaphone-48.png) IO System
+> Library of Unix effects for Coq. See also [Coq.io](http://coq.io/).
 
     Require Import Io.All.
     Require Import Io.System.All.
