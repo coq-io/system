@@ -1,4 +1,3 @@
-opam*
 .coqdeps.d
 Makefile
 Makefile.bak
