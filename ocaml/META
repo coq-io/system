@@ -1,0 +1,5 @@
+description = "Coq system effects for extraction to OCaml."
+archive(byte) = "ioSystem.cma"
+archive(native) = "ioSystem.cmxa"
+version = "dev"
+requires = "lwt lwt.unix num"
