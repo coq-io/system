@@ -18,7 +18,7 @@ depends: [
   "coq-function-ninjas"
   "coq-list-string" {>= "2.0.0"}
   "coq-io" {>= "4.0.0"}
-  "coq-io-system-ocaml" {= "2.5.0"}
+  "coq-io-system-ocaml" {>= "2.3.0"}
 ]
 tags: [
   "keyword:effects"
