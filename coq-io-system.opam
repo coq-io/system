@@ -23,6 +23,6 @@ depends: [
 tags: [
   "keyword:effects"
   "keyword:extraction"
-  "logpath:Io/System"
+  "logpath:Io.System"
 ]
 synopsis: "System effects for Coq"
