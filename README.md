@@ -13,7 +13,7 @@
       System.log (LString.s "Hello world!").
 
 ## Install
-Using [OPAM for Coq](coq.io/opam/):
+Using [OPAM for Coq](https://github.com/coq/opam-coq-archive):
 
     opam repo add coq-released https://coq.inria.fr/opam/released
     opam install coq-io-system
