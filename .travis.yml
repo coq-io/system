@@ -1,5 +1,4 @@
-dist: trusty
-sudo: required
+dist: bionic
 language: generic
 
 services:
@@ -26,12 +25,10 @@ install: |
     export PS4='+ \e[33;1m(\$0 @ line \$LINENO) \$\e[0m '
     set -ex  # -e = exit on failure; -x = trace for debug
     opam update
-    opam pin add ${PACKAGE_NAME}.opam . --kind=path --no-action
-    opam config list
-    opam repo list
-    opam pin list
-    opam list
+    opam pin add ${PACKAGE_NAME} . --kind=path --no-action -y
+    opam config list; opam repo list; opam pin list; opam list
     " install
+
 script:
 - echo -e "${ANSI_YELLOW}Building...${ANSI_RESET}" && echo -en 'travis_fold:start:script\\r'
 - |
@@ -40,13 +37,15 @@ script:
     set -ex
     sudo chown -R coq:coq /home/project
     # Check if the package is compatible with the current environment
-    if [ ${SHOULD_SUPPORT} ] || opam install ${PACKAGE_NAME} --show-action; then
+    if [ "${SHOULD_SUPPORT}" = "true" ] || opam install ${PACKAGE_NAME} --show-action -y; then
       # First install the dependencies
       opam install ${PACKAGE_NAME} --deps-only -y
       opam list
       # Then install the package itself in verbose mode
-      opam install ${PACKAGE_NAME} -v
+      opam install ${PACKAGE_NAME} -v -y
     fi;
     " script
-- docker stop COQ  # optional
 - echo -en 'travis_fold:end:script\\r'
+
+after_script:
+- docker stop COQ  # optional
